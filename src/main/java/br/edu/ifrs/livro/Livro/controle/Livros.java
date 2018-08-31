@@ -9,10 +9,13 @@ import br.edu.ifrs.livro.Livro.dao.LivrosDao;
 import br.edu.ifrs.livro.Livro.modelo.Livro;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -24,11 +27,14 @@ public class Livros {
     LivrosDao livrosDao;
     
     @RequestMapping(path= "/livros/", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
     public Iterable<Livro> listar(){
         return livrosDao.findAll();
     }
     
+    
     @RequestMapping(path="/livros/{id}", method =RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
     public Livro recuperar (@PathVariable int id) {
         Optional<Livro> optLivro = livrosDao.findById(id);
     
@@ -39,6 +45,22 @@ public class Livros {
             return null;
         }
     }
+    /*
+    
+    versão usando o entity
+    @RequestMapping(path="/livros/{id}", method =RequestMethod.GET)
+    public ResponseEntity<Livro> recuperar (@PathVariable int id) {
+        Optional<Livro> optLivro = livrosDao.findById(id);
+    
+        if(optLivro.isPresent()){
+            return ResponseEntity.ok(optLivro.get());
+        }
+        else {   
+            return ResponseEntity.notFound().build();
+        }
+    }
+    */
+    
     
     @RequestMapping(path= "/livros/", method = RequestMethod.POST)
     public Livro insere(@RequestBody Livro livro){
